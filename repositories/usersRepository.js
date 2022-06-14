@@ -6,7 +6,7 @@ async function getUserByEmail(email) {
     return connection.query(`SELECT * FROM users WHERE email = $1 `, [email]);
 }
 
-async function createUser(email, userName, password, picture) {
+async function createUser(email,  password, userName, picture) {
     const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     const passwordHash = bcrypt.hashSync(password, 10);
     return connection.query(`
