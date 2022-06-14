@@ -18,7 +18,10 @@ export async function login(req, res) {
       const config = { expiresIn: 60 * 60 * 24 };
       const token = jwt.sign(data, process.env.JWT_SECRET, config);
       await sessionRepository.createSession(users.rows[0].id);
-      return res.status(200).send({ token: token, userName: users.rows[0].userName, picture: users.rows[0].picture });
+      delete users.rows[0].createdAt;
+      delete users.rows[0].email;
+      delete users.rows[0].password;
+      return res.status(200).send({ token: token, ...users.rows[0] });
     }
     res.sendStatus(401);
 
