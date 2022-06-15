@@ -1,4 +1,3 @@
-
 import postsTimeline from "../repositories/timelineRepository.js";
 
 export async function timeline(req, res) {
@@ -6,7 +5,7 @@ export async function timeline(req, res) {
     try {
         const lastPosts = await postsTimeline.getTimeline() ;
 
-        res.sstatus(201).send(lastPosts.rows);
+        res.status(201).send(lastPosts.rows);
 
     } catch (error) {
         console.log(error);
