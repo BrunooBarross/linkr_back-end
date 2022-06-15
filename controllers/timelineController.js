@@ -26,3 +26,15 @@ export async function timeline(req, res) {
         return res.sendStatus(500);
     }
 }
+
+export async function publishPost(req, res){
+    const userId = res.locals.userId.id;
+    const { link, text } = req.body; 
+    try {
+        await postsTimeline.postUrlTimeLine(userId, link, text)
+        return res.sendStatus(201);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
