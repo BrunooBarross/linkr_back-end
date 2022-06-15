@@ -1,7 +1,7 @@
+const LIMIT_POSTS = 20;
+
 import connection from "../db.js";
 
-
-const LIMIT_POSTS = 20;
 
 async function getTimeline() {
 
