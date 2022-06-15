@@ -14,10 +14,10 @@ export async function login(req, res) {
     }
 
     if (bcrypt.compareSync(password, users.rows[0].password)) {
-      const data = { userId: users.rows[0].id };
+      const sessionId = await sessionRepository.createSession(users.rows[0].id);
+      const data = { sessionId: sessionId.rows[0].id };
       const config = { expiresIn: 60 * 60 * 24 };
       const token = jwt.sign(data, process.env.JWT_SECRET, config);
-      await sessionRepository.createSession(users.rows[0].id);
       delete users.rows[0].createdAt;
       delete users.rows[0].email;
       delete users.rows[0].password;

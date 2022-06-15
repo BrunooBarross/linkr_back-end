@@ -21,3 +21,28 @@ export async function createUser(req, res) {
   }
 }
 
+export async function getUsersPosts(req, res) {
+  const userId = req.params.id;
+  const { id } = res.locals.userId;
+
+  try {
+    const posts = await usersRepository.getPostsUsers(userId);
+    const postsLikes = await usersRepository.getPostsLikes(userId, id);
+    const userData = await usersRepository.getUser(userId);
+    for (let i = 0; i < posts.rows.length; i++) {
+      posts.rows[i] = { ...posts.rows[i], liked: false }
+    }
+    for (let i = 0; i < posts.rows.length; i++) {
+      for (let j = 0; j < postsLikes.rows.length; j++) {
+        if (posts.rows[i].id === postsLikes.rows[j].id) {
+          posts.rows[i] = { ...posts.rows[i], liked: true }
+        }
+      }
+    }
+    const result = { ...userData.rows[0], posts: [...posts.rows] };
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}
