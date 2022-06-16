@@ -18,6 +18,9 @@ CREATE TABLE posts(
 	"userId" INTEGER NOT NULL REFERENCES "users"("id"),
 	link TEXT NOT NULL,
 	text TEXT,
+	title TEXT NOT NULL,
+	description TEXT NOT NULL,
+	image TEXT NOT NULL,
 	"createdAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 

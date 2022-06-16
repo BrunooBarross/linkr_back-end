@@ -1,5 +1,5 @@
 const LIMIT_POSTS = 20;
-
+import urlMetadata from "url-metadata";
 import connection from "../db.js";
 
 
@@ -25,9 +25,18 @@ async function getAuthTimeLine(id){
         ORDER BY p.id DESC;`, [id]);
 }
 
+async function postUrlTimeLine(userId, link, text) {
+    const metadata = await urlMetadata(link);
+    connection.query(`
+        INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
+        VALUES ($1,$2,$3,$4,$5,$6)
+    `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image]);
+}
+
 const postsTimeline = {
     getTimeline,
-    getAuthTimeLine
+    getAuthTimeLine,
+    postUrlTimeLine
 }
 
 export default postsTimeline;
