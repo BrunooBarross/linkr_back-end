@@ -41,13 +41,21 @@ async function getPostsLikes(userId, userTokenId) {
         GROUP BY p.id
         ORDER BY p.id DESC;`, [userId, userTokenId]);
 }
+
+async function getUsersByUsername(username) {
+    return connection.query(`
+        SELECT * FROM users
+        WHERE "userName" LIKE $1 LIMIT 3`, [`${username}%`]);
+}
+
 const usersRepository = {
     createUser,
     getUserByEmail,
     getUser,
     getUserById,
     getPostsUsers,
-    getPostsLikes
+    getPostsLikes,
+    getUsersByUsername
 };
 
 export default usersRepository;
