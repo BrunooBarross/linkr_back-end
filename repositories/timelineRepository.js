@@ -27,16 +27,36 @@ async function getAuthTimeLine(id){
 
 async function postUrlTimeLine(userId, link, text) {
     const metadata = await urlMetadata(link);
-    connection.query(`
+    return connection.query(`
         INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
         VALUES ($1,$2,$3,$4,$5,$6)
     `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image]);
 }
 
+async function selectUserIdPost(postId) {
+    return connection.query(`SELECT posts."userId" FROM posts WHERE posts.id = $1`, [postId]);
+}
+
+async function deletePostIdHash(postId) {
+    return connection.query(`DELETE FROM "hashtagRelation" WHERE "hashtagRelation"."postId" = $1`, [postId]);
+}
+
+async function deletePostIdLikes(postId) {
+    return connection.query(`DELETE FROM likes WHERE likes."postId" = $1`, [postId]);
+}
+
+async function deletePostId(postId) {
+    return connection.query(`DELETE FROM posts WHERE posts.id = $1`, [postId]);
+}
+
 const postsTimeline = {
     getTimeline,
     getAuthTimeLine,
-    postUrlTimeLine
+    postUrlTimeLine,
+    selectUserIdPost,
+    deletePostIdHash,
+    deletePostIdLikes,
+    deletePostId
 }
 
 export default postsTimeline;
