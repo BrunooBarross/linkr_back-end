@@ -52,3 +52,17 @@ export async function deletePost(req, res){
         return res.sendStatus(500);
     }
 }
+
+export async function updatePost(req, res){
+    const postId = req.headers.id;
+    const userId = res.locals.userId.id;
+    const { link, text } = req.body; 
+    
+    try {
+        const update = await postsTimeline.updatePost(userId, postId, link, text);
+        return res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}

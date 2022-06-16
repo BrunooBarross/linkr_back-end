@@ -49,6 +49,19 @@ async function deletePostId(postId) {
     return connection.query(`DELETE FROM posts WHERE posts.id = $1`, [postId]);
 }
 
+async function updatePost(userId,postId, link, text) {
+    const metadata = await urlMetadata(link);
+    return connection.query(`
+        UPDATE posts 
+        SET "userId" = $1, 
+            link = $2, 
+            text = $3, 
+            title = $4, 
+            description = $5,
+            image = $6
+            WHERE posts.id = $7`
+            ,[userId, metadata.url, text, metadata.title, metadata.description, metadata.image, postId]);
+}
 const postsTimeline = {
     getTimeline,
     getAuthTimeLine,
@@ -56,7 +69,8 @@ const postsTimeline = {
     selectUserIdPost,
     deletePostIdHash,
     deletePostIdLikes,
-    deletePostId
+    deletePostId,
+    updatePost
 }
 
 export default postsTimeline;
