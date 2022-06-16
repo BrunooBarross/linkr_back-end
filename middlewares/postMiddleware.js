@@ -13,7 +13,7 @@ export async function verifyPost(req, res, next) {
     next();
 }
 
-export async function verifyDeletePost(req, res, next) {
+export async function verifyDelPutPost(req, res, next) {
     const userId = res.locals.userId.id;
     const idPost = req.headers.id;
     try {
