@@ -51,7 +51,6 @@ export async function getUsersByUsername(req, res) {
   const { username } = req.body
   try {
     const users = await usersRepository.getUsersByUsername(username);
-    console.log(users.rows)
     res.send(users.rows)
   } catch (error) {
     console.log(error)
