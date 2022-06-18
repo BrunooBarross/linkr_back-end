@@ -1,3 +1,4 @@
+import hashtagsRepository from "../repositories/hashtagRepository.js";
 import postsTimeline from "../repositories/timelineRepository.js";
 
 export async function timeline(req, res) {
@@ -30,11 +31,34 @@ export async function timeline(req, res) {
 export async function publishPost(req, res){
     const userId = res.locals.userId.id;
     const { link, text } = req.body; 
+    const  { arrayHashtags }  = res.locals;
+   
     try {
-        await postsTimeline.postUrlTimeLine(userId, link, text);
-        return res.sendStatus(201);
+        const insertPost = await postsTimeline.postUrlTimeLine(userId, link, text);
+        if(arrayHashtags.length === 0 ){
+            return res.sendStatus(201);
+        }
+        postHashtag(insertPost.rows[0].id, arrayHashtags, res);
     } catch (error) {
         console.log(error);
+        return res.sendStatus(500);
+    }
+}
+
+async function postHashtag(postId, arrayHashtags, res) {
+    try {
+        for (let i = 0; i < arrayHashtags.length; i++) {
+            const existingHashtag = await hashtagsRepository.existingHashtag(arrayHashtags[i]);
+            if (existingHashtag.rowCount === 0) {
+                const insertHashtag = await hashtagsRepository.insertHashtag(arrayHashtags[i]);
+                const insertRelationHashtag = await hashtagsRepository.insertRelationHashtag(postId, insertHashtag.rows[0].id);
+            }
+            if (existingHashtag.rowCount > 0) {
+                const insertRelationHashtag = await hashtagsRepository.insertRelationHashtag(postId, existingHashtag.rows[0].id);
+            }
+        }
+        return res.sendStatus(201);
+    } catch (error) {
         return res.sendStatus(500);
     }
 }

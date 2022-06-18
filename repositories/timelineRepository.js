@@ -29,7 +29,7 @@ async function postUrlTimeLine(userId, link, text) {
     const metadata = await urlMetadata(link);
     return connection.query(`
         INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
-        VALUES ($1,$2,$3,$4,$5,$6)
+        VALUES ($1,$2,$3,$4,$5,$6) RETURNING id
     `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image]);
 }
 

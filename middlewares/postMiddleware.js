@@ -31,3 +31,18 @@ export async function verifyDelPutPost(req, res, next) {
         return res.sendStatus(500);
     }
 }
+
+export default function validateHashtagsRegex(req, res, next){
+    const { text } = req.body
+
+    const regexText = /#+[a-zA-Z0-9A-Za-zÀ-ÖØ-öø-ʸ(_)]{1,}/g;
+
+    const array = [...text.matchAll(regexText)];
+
+    for(let i = 0; i < array.length; i++){
+        array[i] = array[i][0]
+    }
+
+    res.locals.arrayHashtags = array
+    next()
+} 
