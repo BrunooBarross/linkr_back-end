@@ -1,5 +1,6 @@
 import hashtagsRepository from "../repositories/hashtagRepository.js";
 import postsTimeline from "../repositories/timelineRepository.js";
+import { filterHashtags } from "../schemas/hashtagsSchema.js";
 
 export async function timeline(req, res) {
     const { id } = res.locals.userId;
@@ -84,11 +85,7 @@ export async function updatePost(req, res) {
     const { arrayHashtags } = res.locals;
     const { link, text } = req.body;
 
-    const regexText = /#+[a-zA-Z0-9A-Za-zÀ-ÖØ-öø-ʸ(_)]{1,}/g;
-    const array = [...postText.matchAll(regexText)];
-    for (let i = 0; i < array.length; i++) {
-        array[i] = array[i][0]
-    }
+    const array = filterHashtags(postText);
 
     try {
         if (arrayHashtags.length === 0 && array.length === 0) {
