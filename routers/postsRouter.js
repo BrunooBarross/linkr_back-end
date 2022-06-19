@@ -10,6 +10,6 @@ const posts = Router();
 posts.get("/timeline", validateToken, timeline);
 posts.post("/post", validateToken, verifyPost, validateHashtagsRegex, publishPost)
 posts.delete("/post", validateToken, verifyDelPutPost, deletePost)
-posts.put("/post", validateToken, verifyDelPutPost, updatePost)
+posts.put("/post", validateToken, verifyDelPutPost, validateHashtagsRegex, updatePost)
 
 export default posts;

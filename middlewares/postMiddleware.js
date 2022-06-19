@@ -24,7 +24,7 @@ export async function verifyDelPutPost(req, res, next) {
         if(userId !== selectUserId.rows[0].userId){
             return res.sendStatus(401);
         }
-        
+        res.locals.postText = selectUserId.rows[0].text;
         next();
     } catch (error) {
         console.log(error);
