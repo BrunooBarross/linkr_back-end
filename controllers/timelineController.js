@@ -77,12 +77,66 @@ export async function deletePost(req, res){
     }
 }
 
-export async function updatePost(req, res){
+export async function updatePost(req, res) {
     const postId = req.headers.id;
     const userId = res.locals.userId.id;
-    const { link, text } = req.body; 
-    
+    const { postText } = res.locals;
+    const { arrayHashtags } = res.locals;
+    const { link, text } = req.body;
+
+    const regexText = /#+[a-zA-Z0-9A-Za-zÀ-ÖØ-öø-ʸ(_)]{1,}/g;
+    const array = [...postText.matchAll(regexText)];
+    for (let i = 0; i < array.length; i++) {
+        array[i] = array[i][0]
+    }
+
     try {
+        if (arrayHashtags.length === 0 && array.length === 0) {
+            const update = await postsTimeline.updatePost(userId, postId, link, text);
+            return res.sendStatus(200);
+        }
+        updatePostAndHashtag(postId, userId, link, text, arrayHashtags, array, res);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
+
+async function updatePostAndHashtag(postId, userId, link, text, arrayHashtags, array, res) {
+    try {
+        if (arrayHashtags.length > 0 && array.length === 0) {
+            for (let i = 0; i < arrayHashtags.length; i++) {
+                const existingHashtag = await hashtagsRepository.existingHashtag(arrayHashtags[i]);
+                if (existingHashtag.rowCount === 0) {
+                    const insertHashtag = await hashtagsRepository.insertHashtag(arrayHashtags[i]);
+                    await hashtagsRepository.insertRelationHashtag(postId, insertHashtag.rows[0].id);
+                }
+                if (existingHashtag.rowCount > 0) {
+                    await hashtagsRepository.insertRelationHashtag(postId, existingHashtag.rows[0].id);
+                }
+            }
+            const update = await postsTimeline.updatePost(userId, postId, link, text);
+            return res.sendStatus(200);
+        }
+
+        const deleteRelationHashtag = await hashtagsRepository.deleteRelationHashtag(postId);
+        for (let i = 0; i < array.length; i++) {
+            const verifyUsingHashtag = await hashtagsRepository.selectUsingHashtag(array[i]);
+            if (verifyUsingHashtag.rowCount === 0) {
+                console.log('entrei aqui diboa');
+                const deleteHashtag = await hashtagsRepository.deleteHashtag(array[i]);
+            }
+        }
+        for (let i = 0; i < arrayHashtags.length; i++) {
+            const existingHashtag = await hashtagsRepository.existingHashtag(arrayHashtags[i]);
+            if (existingHashtag.rowCount === 0) {
+                const insertHashtag = await hashtagsRepository.insertHashtag(arrayHashtags[i]);
+                await hashtagsRepository.insertRelationHashtag(postId, insertHashtag.rows[0].id);
+            }
+            if (existingHashtag.rowCount > 0) {
+                await hashtagsRepository.insertRelationHashtag(postId, existingHashtag.rows[0].id);
+            }
+        }
         const update = await postsTimeline.updatePost(userId, postId, link, text);
         return res.sendStatus(200);
     } catch (error) {

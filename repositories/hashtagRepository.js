@@ -12,7 +12,7 @@ async function fetchTrendingHashtags(){
 
 async function existingHashtag(string){
     return connection.query(`
-    SELECT hashtags.id FROM hashtags WHERE hashtags.hashtag ILIKE ($1)`, [`%${string}%`]);
+    SELECT hashtags.* FROM hashtags WHERE hashtags.hashtag ILIKE ($1)`, [`%${string}`]);
 }
 
 async function insertHashtag(string){
@@ -27,6 +27,28 @@ async function insertRelationHashtag(postId, hashtagId){
         INSERT INTO "hashtagRelation" ("postId", "hashtagId")
         VALUES ($1,$2) RETURNING id
     `, [postId, hashtagId])
+}
+
+async function deleteRelationHashtag(postId){
+    return connection.query(`
+        DELETE FROM "hashtagRelation" 
+        WHERE "hashtagRelation"."postId" = $1
+    `,[postId])
+}
+
+async function selectUsingHashtag(string){
+    console.log(string);
+    return connection.query(`
+        SELECT hashtags.* FROM hashtags 
+        JOIN "hashtagRelation" ON "hashtagRelation"."hashtagId" = hashtags.id
+        WHERE hashtags.hashtag ILIKE ($1)
+    `,[`%${string}`])
+}
+
+async function deleteHashtag(string){
+    return connection.query(`
+        DELETE FROM hashtags WHERE hashtags.hashtag ILIKE ($1)
+    `,[`%${string}`])
 }
 
 async function fetchUsersHashtag(string){
@@ -48,7 +70,10 @@ const hashtagsRepository = {
     existingHashtag,
     insertHashtag,
     insertRelationHashtag,
-    fetchUsersHashtag
+    fetchUsersHashtag,
+    deleteRelationHashtag,
+    selectUsingHashtag,
+    deleteHashtag
 }
 
 export default hashtagsRepository;

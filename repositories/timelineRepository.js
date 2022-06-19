@@ -34,7 +34,7 @@ async function postUrlTimeLine(userId, link, text) {
 }
 
 async function selectUserIdPost(postId) {
-    return connection.query(`SELECT posts."userId" FROM posts WHERE posts.id = $1`, [postId]);
+    return connection.query(`SELECT posts.* FROM posts WHERE posts.id = $1`, [postId]);
 }
 
 async function deletePostIdHash(postId) {
