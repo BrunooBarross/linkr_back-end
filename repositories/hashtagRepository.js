@@ -29,11 +29,26 @@ async function insertRelationHashtag(postId, hashtagId){
     `, [postId, hashtagId])
 }
 
+async function fetchUsersHashtag(string){
+    return connection.query(`
+        SELECT u."userName", u.picture, p.id as postId, p. "userId", p.link, p.text, p.title, p.description, p.image, 
+        COALESCE(COUNT(l."postId"),0) AS likes, h1."postId", h2.id as "hashtagId", h2.hashtag
+        FROM posts p
+        LEFT JOIN likes l ON l."postId" = p.id
+        JOIN "hashtagRelation" h1 ON h1."postId" = p.id
+        JOIN hashtags h2 ON h2.id = h1."hashtagId"
+        JOIN users u ON u.id = p."userId"
+        WHERE h2."hashtag" = $1
+        GROUP BY (p.id, u.id, h1.id, h2.id)
+        ORDER BY p.id DESC
+    `, [`#${string}`])
+}
 const hashtagsRepository = {
     fetchTrendingHashtags,
     existingHashtag,
     insertHashtag,
-    insertRelationHashtag
+    insertRelationHashtag,
+    fetchUsersHashtag
 }
 
 export default hashtagsRepository;

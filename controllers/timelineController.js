@@ -90,3 +90,30 @@ export async function updatePost(req, res){
         return res.sendStatus(500);
     }
 }
+
+export async function getPostsByHashtag(req, res) {
+    const { hashtag } = req.params;
+    const { id } = res.locals.userId;
+    try {
+      const consult = await hashtagsRepository.fetchUsersHashtag(hashtag);
+      if (consult.rowCount === 0) {
+        return res.sendStatus(404);
+      }
+      const postsLikes = await postsTimeline.getAuthTimeLine(id);
+      for (let i = 0; i < consult.rows.length; i++) {
+        consult.rows[i] = { ...consult.rows[i], liked: false }
+      }
+  
+      for (let i = 0; i < consult.rows.length; i++) {
+        for (let j = 0; j < postsLikes.rows.length; j++) {
+          if (consult.rows[i].postId === postsLikes.rows[j].id) {
+            consult.rows[i] = { ...consult.rows[i], liked: true }
+          }
+        }
+      }
+      res.status(200).send(consult.rows);
+    } catch (error) {
+      console.log(error)
+      res.sendStatus(500)
+    }
+  }
