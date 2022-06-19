@@ -37,10 +37,6 @@ async function selectUserIdPost(postId) {
     return connection.query(`SELECT posts.* FROM posts WHERE posts.id = $1`, [postId]);
 }
 
-async function deletePostIdHash(postId) {
-    return connection.query(`DELETE FROM "hashtagRelation" WHERE "hashtagRelation"."postId" = $1`, [postId]);
-}
-
 async function deletePostIdLikes(postId) {
     return connection.query(`DELETE FROM likes WHERE likes."postId" = $1`, [postId]);
 }
@@ -67,7 +63,6 @@ const postsTimeline = {
     getAuthTimeLine,
     postUrlTimeLine,
     selectUserIdPost,
-    deletePostIdHash,
     deletePostIdLikes,
     deletePostId,
     updatePost

@@ -64,11 +64,19 @@ async function postHashtag(postId, arrayHashtags, res) {
     }
 }
 
-export async function deletePost(req, res){
+export async function deletePost(req, res) {
     const postId = req.headers.id;
-     
+    const { postText } = res.locals;
+    const array = filterHashtags(postText);
+
     try {
-        await postsTimeline.deletePostIdHash(postId);
+        const deleteRelationHashtag = await hashtagsRepository.deleteRelationHashtag(postId);
+        for (let i = 0; i < array.length; i++) {
+            const verifyUsingHashtag = await hashtagsRepository.selectUsingHashtag(array[i]);
+            if (verifyUsingHashtag.rowCount === 0) {
+                const deleteHashtag = await hashtagsRepository.deleteHashtag(array[i]);
+            }
+        }
         await postsTimeline.deletePostIdLikes(postId);
         await postsTimeline.deletePostId(postId);
         return res.sendStatus(200);

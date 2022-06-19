@@ -1,5 +1,6 @@
 import { bodyPostSchema } from "../schemas/postSchema.js";
 import postsTimeline from "../repositories/timelineRepository.js";
+import { filterHashtags } from "../schemas/hashtagsSchema.js";
 
 export async function verifyPost(req, res, next) {
     const values = req.body;
@@ -35,13 +36,7 @@ export async function verifyDelPutPost(req, res, next) {
 export default function validateHashtagsRegex(req, res, next){
     const { text } = req.body
 
-    const regexText = /#+[a-zA-Z0-9A-Za-zÀ-ÖØ-öø-ʸ(_)]{1,}/g;
-
-    const array = [...text.matchAll(regexText)];
-
-    for(let i = 0; i < array.length; i++){
-        array[i] = array[i][0]
-    }
+    const array = filterHashtags(text);
 
     res.locals.arrayHashtags = array
     next()
