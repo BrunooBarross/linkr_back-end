@@ -57,3 +57,4 @@ export async function getUsersByUsername(req, res) {
     res.sendStatus(500)
   }
 }
+
