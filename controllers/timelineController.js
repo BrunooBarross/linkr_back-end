@@ -120,13 +120,6 @@ async function updatePostAndHashtag(postId, userId, link, text, arrayHashtags, a
         }
 
         const deleteRelationHashtag = await hashtagsRepository.deleteRelationHashtag(postId);
-        for (let i = 0; i < array.length; i++) {
-            const verifyUsingHashtag = await hashtagsRepository.selectUsingHashtag(array[i]);
-            if (verifyUsingHashtag.rowCount === 0) {
-                console.log('entrei aqui diboa');
-                const deleteHashtag = await hashtagsRepository.deleteHashtag(array[i]);
-            }
-        }
         for (let i = 0; i < arrayHashtags.length; i++) {
             const existingHashtag = await hashtagsRepository.existingHashtag(arrayHashtags[i]);
             if (existingHashtag.rowCount === 0) {
@@ -135,6 +128,12 @@ async function updatePostAndHashtag(postId, userId, link, text, arrayHashtags, a
             }
             if (existingHashtag.rowCount > 0) {
                 await hashtagsRepository.insertRelationHashtag(postId, existingHashtag.rows[0].id);
+            }
+        }
+        for (let i = 0; i < array.length; i++) {
+            const verifyUsingHashtag = await hashtagsRepository.selectUsingHashtag(array[i]);
+            if (verifyUsingHashtag.rowCount === 0) {
+                const deleteHashtag = await hashtagsRepository.deleteHashtag(array[i]);
             }
         }
         const update = await postsTimeline.updatePost(userId, postId, link, text);

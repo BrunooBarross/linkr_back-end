@@ -37,7 +37,6 @@ async function deleteRelationHashtag(postId){
 }
 
 async function selectUsingHashtag(string){
-    console.log(string);
     return connection.query(`
         SELECT hashtags.* FROM hashtags 
         JOIN "hashtagRelation" ON "hashtagRelation"."hashtagId" = hashtags.id
