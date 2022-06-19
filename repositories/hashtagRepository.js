@@ -10,8 +10,30 @@ async function fetchTrendingHashtags(){
     LIMIT 10`);
 }
 
+async function existingHashtag(string){
+    return connection.query(`
+    SELECT hashtags.id FROM hashtags WHERE hashtags.hashtag ILIKE ($1)`, [`%${string}%`]);
+}
+
+async function insertHashtag(string){
+    return connection.query(`
+        INSERT INTO hashtags(hashtag)
+        VALUES ($1) RETURNING id
+    `, [string])
+}
+
+async function insertRelationHashtag(postId, hashtagId){
+    return connection.query(`
+        INSERT INTO "hashtagRelation" ("postId", "hashtagId")
+        VALUES ($1,$2) RETURNING id
+    `, [postId, hashtagId])
+}
+
 const hashtagsRepository = {
-    fetchTrendingHashtags
+    fetchTrendingHashtags,
+    existingHashtag,
+    insertHashtag,
+    insertRelationHashtag
 }
 
 export default hashtagsRepository;
