@@ -11,7 +11,8 @@ async function getTimeline() {
         LEFT JOIN likes l ON l."postId" = p.id
         JOIN users u ON u.id = p."userId"
         GROUP BY (p.id, u.id)
-        ORDER BY p.id DESC`
+        ORDER BY p.id DESC
+        LIMIT ${LIMIT_POSTS}`
     );
 }
 
