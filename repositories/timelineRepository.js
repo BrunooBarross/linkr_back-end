@@ -28,6 +28,9 @@ async function getAuthTimeLine(id){
 
 async function postUrlTimeLine(userId, link, text) {
     const metadata = await urlMetadata(link);
+    if (metadata.image === "") {
+        metadata.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
+    }
     return connection.query(`
         INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
         VALUES ($1,$2,$3,$4,$5,$6) RETURNING id
