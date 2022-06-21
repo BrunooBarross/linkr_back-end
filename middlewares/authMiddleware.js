@@ -15,11 +15,9 @@ export async function checkSignIn(req, res, next) {
 }
 
 export async function validateToken(req, res, next) {
-  console.log("Entrou");
   console.log(req.headers);
   const authorization = req.headers.authorization;
   const token = authorization?.replace("Bearer ", "");
-  console.log(token);
   if (!token) {
     return res.status(401).send("No token."); // unauthorized
   }
@@ -33,7 +31,6 @@ export async function validateToken(req, res, next) {
       return res.status(401).send("Session not found."); // unauthorized
     }
     res.locals.userId = user.rows[0];
-    console.log("Validou");
     next();
   } catch (error) {
     console.log(error);
