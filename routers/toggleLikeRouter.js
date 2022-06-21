@@ -7,6 +7,6 @@ import verifyLikeMiddleware from "../middlewares/verifyLikeMiddleware.js";
 const toggleLikesRouter = Router();
 
 toggleLikesRouter.post("/like", validateToken, verifyLikeMiddleware, postLike);
-toggleLikesRouter.delete("/like", validateToken, deleteUserLike);
+toggleLikesRouter.delete("/like/:postId", validateToken, deleteUserLike);
 
 export default toggleLikesRouter;
