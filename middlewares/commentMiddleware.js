@@ -21,3 +21,16 @@ export async function checkComment(req, res, next) {
         res.sendStatus(500);
     }
 }
+
+export async function verifyExistingPost(req, res, next){
+    try {
+        const existingPost = await postsTimeline.existingPost(req.body.postId)
+        if (existingPost.rowCount === 0) {
+            return res.sendStatus(404);
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}

@@ -12,3 +12,17 @@ export async function postComment(req, res){
         res.sendStatus(500);
     }
 }
+
+
+export async function getComments(req, res){
+    const { postId } = req.body;
+    const { id } = res.locals.userId;
+
+    try {
+        const selectComments = await commentRepository.selectComments(id, postId)
+        res.status(200).send(selectComments.rows);
+    } catch (esrror) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}

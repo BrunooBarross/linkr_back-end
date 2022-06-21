@@ -53,5 +53,6 @@ CREATE TABLE comments(
 	id SERIAL PRIMARY KEY,
 	"senderUserId" INTEGER NOT NULL REFERENCES "users"("id"),
 	"postId" INTEGER NOT NULL REFERENCES "posts"("id"),
-	comment TEXT NOT NULL
+	comment TEXT NOT NULL,
+	"createdAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
