@@ -62,6 +62,12 @@ async function updatePost(userId,postId, link, text) {
             WHERE posts.id = $7`
             ,[userId, metadata.url, text, metadata.title, metadata.description, metadata.image, postId]);
 }
+
+async function existingPost(postId){
+    return connection.query(`
+        SELECT * FROM posts WHERE id = $1
+    `, [postId])
+}
 const postsTimeline = {
     getTimeline,
     getAuthTimeLine,
@@ -69,7 +75,8 @@ const postsTimeline = {
     selectUserIdPost,
     deletePostIdLikes,
     deletePostId,
-    updatePost
+    updatePost,
+    existingPost
 }
 
 export default postsTimeline;
