@@ -1,5 +1,6 @@
 import { bodyPostSchema } from "../schemas/postSchema.js";
 import postsTimeline from "../repositories/timelineRepository.js";
+import { filterHashtags } from "../schemas/hashtagsSchema.js";
 
 export async function verifyPost(req, res, next) {
     const values = req.body;
@@ -24,10 +25,19 @@ export async function verifyDelPutPost(req, res, next) {
         if(userId !== selectUserId.rows[0].userId){
             return res.sendStatus(401);
         }
-        
+        res.locals.postText = selectUserId.rows[0].text;
         next();
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
     }
 }
+
+export default function validateHashtagsRegex(req, res, next){
+    const { text } = req.body
+
+    const array = filterHashtags(text);
+
+    res.locals.arrayHashtags = array
+    next()
+} 

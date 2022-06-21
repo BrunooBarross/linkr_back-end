@@ -1,4 +1,5 @@
 import usersRepository from '../repositories/usersRepository.js';
+import followerRepository from "../repositories/followerRepository.js";
 
 export async function createUser(req, res) {
   const user = req.body;
@@ -29,6 +30,16 @@ export async function getUsersPosts(req, res) {
     const posts = await usersRepository.getPostsUsers(userId);
     const postsLikes = await usersRepository.getPostsLikes(userId, id);
     const userData = await usersRepository.getUser(userId);
+    const selectFollower = await followerRepository.verifyFollower(id, userId);
+
+    if(selectFollower.rowCount === 0){
+      userData.rows[0] = { ... userData.rows[0], following: false};
+    }
+
+    if(selectFollower.rowCount > 0){
+      userData.rows[0] = { ... userData.rows[0], following: true};
+    }
+    
     for (let i = 0; i < posts.rows.length; i++) {
       posts.rows[i] = { ...posts.rows[i], liked: false }
     }
@@ -57,3 +68,4 @@ export async function getUsersByUsername(req, res) {
     res.sendStatus(500)
   }
 }
+

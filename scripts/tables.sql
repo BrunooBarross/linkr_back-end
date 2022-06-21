@@ -42,3 +42,9 @@ CREATE TABLE "hashtagRelation"(
 	"postId" INTEGER NOT NULL REFERENCES "posts"("id"),
 	"hashtagId" INTEGER NOT NULL REFERENCES "hashtags"("id")
 );
+
+CREATE TABLE followers(
+	id SERIAL PRIMARY KEY,
+	"followerId" INTEGER NOT NULL REFERENCES "users"("id"),
+	"followId" INTEGER NOT NULL REFERENCES "users"("id")
+);

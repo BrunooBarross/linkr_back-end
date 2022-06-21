@@ -11,7 +11,8 @@ async function getTimeline() {
         LEFT JOIN likes l ON l."postId" = p.id
         JOIN users u ON u.id = p."userId"
         GROUP BY (p.id, u.id)
-        ORDER BY p.id DESC`
+        ORDER BY p.id DESC
+        LIMIT ${LIMIT_POSTS}`
     );
 }
 
@@ -27,18 +28,17 @@ async function getAuthTimeLine(id){
 
 async function postUrlTimeLine(userId, link, text) {
     const metadata = await urlMetadata(link);
+    if (metadata.image === "") {
+        metadata.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
+    }
     return connection.query(`
         INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
-        VALUES ($1,$2,$3,$4,$5,$6)
+        VALUES ($1,$2,$3,$4,$5,$6) RETURNING id
     `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image]);
 }
 
 async function selectUserIdPost(postId) {
-    return connection.query(`SELECT posts."userId" FROM posts WHERE posts.id = $1`, [postId]);
-}
-
-async function deletePostIdHash(postId) {
-    return connection.query(`DELETE FROM "hashtagRelation" WHERE "hashtagRelation"."postId" = $1`, [postId]);
+    return connection.query(`SELECT posts.* FROM posts WHERE posts.id = $1`, [postId]);
 }
 
 async function deletePostIdLikes(postId) {
@@ -67,7 +67,6 @@ const postsTimeline = {
     getAuthTimeLine,
     postUrlTimeLine,
     selectUserIdPost,
-    deletePostIdHash,
     deletePostIdLikes,
     deletePostId,
     updatePost
