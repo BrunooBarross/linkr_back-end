@@ -48,3 +48,10 @@ CREATE TABLE followers(
 	"followerId" INTEGER NOT NULL REFERENCES "users"("id"),
 	"followId" INTEGER NOT NULL REFERENCES "users"("id")
 );
+
+CREATE TABLE comments(
+	id SERIAL PRIMARY KEY,
+	"senderUserId" INTEGER NOT NULL REFERENCES "users"("id"),
+	"postId" INTEGER NOT NULL REFERENCES "posts"("id"),
+	comment TEXT NOT NULL
+);
