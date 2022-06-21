@@ -15,7 +15,6 @@ export async function checkSignIn(req, res, next) {
 }
 
 export async function validateToken(req, res, next) {
-  console.log(req.headers);
   const authorization = req.headers.authorization;
   const token = authorization?.replace("Bearer ", "");
   if (!token) {
