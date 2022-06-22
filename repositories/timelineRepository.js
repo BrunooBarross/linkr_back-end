@@ -67,8 +67,22 @@ async function updatePost(userId,postId, link, text) {
 async function existingPost(postId){
     return connection.query(`
         SELECT * FROM posts WHERE id = $1
-    `, [postId])
+    `, [postId]);
 }
+
+async function getCountNewPosts(userIdToken, date){
+    return connection.query(`
+        SELECT COUNT (*) from (
+            SELECT p.id
+            FROM posts p
+            JOIN users u ON u.id = p."userId"
+            JOIN followers f ON f."followerId" = $1 AND f."followId" = u.id
+            WHERE p."createdAt" > $2
+            GROUP BY (p.id)
+        ) as consult;
+    `,[userIdToken, date]);
+}
+
 const postsTimeline = {
     getTimeline,
     getAuthTimeLine,
@@ -77,7 +91,8 @@ const postsTimeline = {
     deletePostIdLikes,
     deletePostId,
     updatePost,
-    existingPost
+    existingPost,
+    getCountNewPosts
 }
 
 export default postsTimeline;

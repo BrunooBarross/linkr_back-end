@@ -1,6 +1,7 @@
 import hashtagsRepository from "../repositories/hashtagRepository.js";
 import postsTimeline from "../repositories/timelineRepository.js";
 import { filterHashtags } from "../schemas/hashtagsSchema.js";
+import { validateDateSchema } from "../schemas/postSchema.js";
 
 export async function timeline(req, res) {
     const { id } = res.locals.userId;
@@ -153,25 +154,44 @@ export async function getPostsByHashtag(req, res) {
     const { hashtag } = req.params;
     const { id } = res.locals.userId;
     try {
-      const consult = await hashtagsRepository.fetchUsersHashtag(hashtag);
-      if (consult.rowCount === 0) {
-        return res.sendStatus(404);
-      }
-      const postsLikes = await postsTimeline.getAuthTimeLine(id);
-      for (let i = 0; i < consult.rows.length; i++) {
-        consult.rows[i] = { ...consult.rows[i], liked: false }
-      }
-  
-      for (let i = 0; i < consult.rows.length; i++) {
-        for (let j = 0; j < postsLikes.rows.length; j++) {
-          if (consult.rows[i].postId === postsLikes.rows[j].id) {
-            consult.rows[i] = { ...consult.rows[i], liked: true }
-          }
+        const consult = await hashtagsRepository.fetchUsersHashtag(hashtag);
+        if (consult.rowCount === 0) {
+            return res.sendStatus(404);
         }
-      }
-      res.status(200).send(consult.rows);
+        const postsLikes = await postsTimeline.getAuthTimeLine(id);
+        for (let i = 0; i < consult.rows.length; i++) {
+            consult.rows[i] = { ...consult.rows[i], liked: false }
+        }
+
+        for (let i = 0; i < consult.rows.length; i++) {
+            for (let j = 0; j < postsLikes.rows.length; j++) {
+                if (consult.rows[i].postId === postsLikes.rows[j].id) {
+                    consult.rows[i] = { ...consult.rows[i], liked: true }
+                }
+            }
+        }
+        res.status(200).send(consult.rows);
     } catch (error) {
-      console.log(error)
-      res.sendStatus(500)
+        console.log(error)
+        res.sendStatus(500)
     }
-  }
+}
+
+export async function countNewPosts(req, res){
+    const { id } = res.locals.userId;
+    const { createdAt } = req.body;
+    
+    const { error } = validateDateSchema.validate(req.body);
+
+    if (error) {
+        return res.status(422).send(error.details[0].message);
+    }
+
+    try {
+        const countPosts = await postsTimeline.getCountNewPosts(id, createdAt);
+        res.status(200).send(countPosts.rows[0]);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
