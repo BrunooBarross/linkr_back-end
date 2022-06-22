@@ -11,7 +11,7 @@ async function createUser(email, password, userName, picture) {
     const passwordHash = bcrypt.hashSync(password, 10);
     return connection.query(`
     INSERT INTO users (email, password, "userName", picture, "createdAt") 
-    VALUES ($1, $2, $3, $4, $5)`, [email, passwordHash, userName, picture, date]);
+    VALUES ($1, $2, $3, $4, $5) RETURNING id`, [email, passwordHash, userName, picture, date]);
 }
 
 async function getUserById(id) {
