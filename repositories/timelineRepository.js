@@ -3,18 +3,18 @@ import urlMetadata from "url-metadata";
 import connection from "../db.js";
 
 
-async function getTimeline() {
+async function getTimeline(userIdToken) {
 
     return connection.query(`
         SELECT u."userName", u.picture, p.*, COALESCE(COUNT(l."postId"),0) AS likes
         FROM posts p
         LEFT JOIN likes l ON l."postId" = p.id
         JOIN users u ON u.id = p."userId"
-        JOIN followers f ON f."followerId" = 5 AND f."followId" = u.id
+        JOIN followers f ON f."followerId" = $1 AND f."followId" = u.id
         GROUP BY (p.id, u.id, f.id)
         ORDER BY p."createdAt" DESC
         LIMIT ${LIMIT_POSTS}`
-    );
+    ,[userIdToken]);
 }
 
 async function getAuthTimeLine(id){
