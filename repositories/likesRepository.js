@@ -14,7 +14,7 @@ async function postLike(postId, userId){
 
 async function deleteLike(postId, userId){
     return connection.query(`
-        DELETE FROM likes WHERE id = $1 AND "userId" = $2
+        DELETE FROM likes WHERE "postId" = $1 AND "userId" = $2
     `, [postId, userId]);
 }
 
