@@ -20,11 +20,9 @@ export async function postLike(req, res) {
 export async function deleteUserLike(req, res) {
     const {postId} = req.params;
     const { id } = res.locals.userId;
-
-
     try {
         const deleteCount = await likesRepository.deleteLike(postId, id);
-        console.log(deleteCount.rowCount)
+
         if(!deleteCount.rowCount){
             return res.sendStatus(409);
         }

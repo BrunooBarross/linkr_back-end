@@ -13,8 +13,8 @@ export async function createUser(req, res) {
 
     const { email, userName, password, picture } = user;
 
-    await usersRepository.createUser(email, password, userName, picture);
-
+    const insertUser = await usersRepository.createUser(email, password, userName, picture);
+    await followerRepository.createFollower(insertUser.rows[0].id, insertUser.rows[0].id)
     res.sendStatus(201);
   } catch (error) {
     console.log(error);

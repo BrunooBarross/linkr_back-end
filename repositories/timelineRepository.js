@@ -10,8 +10,9 @@ async function getTimeline() {
         FROM posts p
         LEFT JOIN likes l ON l."postId" = p.id
         JOIN users u ON u.id = p."userId"
-        GROUP BY (p.id, u.id)
-        ORDER BY p.id DESC
+        JOIN followers f ON f."followerId" = 5 AND f."followId" = u.id
+        GROUP BY (p.id, u.id, f.id)
+        ORDER BY p."createdAt" DESC
         LIMIT ${LIMIT_POSTS}`
     );
 }

@@ -46,7 +46,8 @@ CREATE TABLE "hashtagRelation"(
 CREATE TABLE followers(
 	id SERIAL PRIMARY KEY,
 	"followerId" INTEGER NOT NULL REFERENCES "users"("id"),
-	"followId" INTEGER NOT NULL REFERENCES "users"("id")
+	"followId" INTEGER NOT NULL REFERENCES "users"("id"),
+	"createdAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE comments(
