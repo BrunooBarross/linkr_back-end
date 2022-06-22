@@ -59,7 +59,7 @@ async function fetchUsersHashtag(string){
         JOIN "hashtagRelation" h1 ON h1."postId" = p.id
         JOIN hashtags h2 ON h2.id = h1."hashtagId"
         JOIN users u ON u.id = p."userId"
-        WHERE h2."hashtag" = $1
+        WHERE h2."hashtag" ILIKE $1
         GROUP BY (p.id, u.id, h1.id, h2.id)
         ORDER BY p.id DESC
     `, [`#${string}`])
