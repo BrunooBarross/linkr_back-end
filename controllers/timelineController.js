@@ -6,7 +6,7 @@ export async function timeline(req, res) {
     const { id } = res.locals.userId;
 
     try {
-        const lastPosts = await postsTimeline.getTimeline();
+        const lastPosts = await postsTimeline.getTimeline(id);
         const lastPosts2 = await postsTimeline.getAuthTimeLine(id)
 
         for (let i = 0; i < lastPosts.rows.length; i++) {
