@@ -59,9 +59,11 @@ export async function getUsersPosts(req, res) {
 }
 
 export async function getUsersByUsername(req, res) {
-  const { username } = req.body
+  const { username } = req.body;
+  const { id } = res.locals.userId;
+  
   try {
-    const users = await usersRepository.getUsersByUsername(username);
+    const users = await usersRepository.getUsersByUsername(id, username);
     res.send(users.rows)
   } catch (error) {
     console.log(error)

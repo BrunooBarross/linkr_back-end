@@ -42,10 +42,14 @@ async function getPostsLikes(userId, userTokenId) {
         ORDER BY p.id DESC;`, [userId, userTokenId]);
 }
 
-async function getUsersByUsername(username) {
+async function getUsersByUsername(userTokenId, username) {
     return connection.query(`
-        SELECT * FROM users
-        WHERE "userName" LIKE $1 LIMIT 3`, [`${username}%`]);
+        SELECT u.*, CASE WHEN f.id IS NULL THEN false ELSE true END as following
+        FROM users u
+        LEFT JOIN followers f ON f."followerId" = $1 and f."followId" = u.id
+        WHERE u."userName" ILIKE $2
+        ORDER BY following DESC
+        LIMIT 3`, [ userTokenId,`${username}%`]);
 }
 
 const usersRepository = {
