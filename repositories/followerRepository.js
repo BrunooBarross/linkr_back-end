@@ -6,6 +6,12 @@ async function verifyFollower(followerId, followId){
         SELECT * FROM followers f WHERE f."followerId" = $1 AND f."followId" = $2;
     `, [followerId, followId])
 }
+
+async function verifyAllFollowerUser(userTokenId){
+    return connection.query(`
+        SELECT * FROM followers f WHERE f."followerId" = $1;
+    `, [userTokenId]);
+}
 async function createFollower(followerId, followId) {
     const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     return connection.query(`
@@ -20,7 +26,8 @@ async function deleteRelationFollower(followerId, followId) {
 const followerRepository = {
     createFollower,
     verifyFollower,
-    deleteRelationFollower
+    deleteRelationFollower,
+    verifyAllFollowerUser
 }
 
 export default followerRepository;
