@@ -179,16 +179,19 @@ export async function getPostsByHashtag(req, res) {
 
 export async function countNewPosts(req, res){
     const { id } = res.locals.userId;
-    const { createdAt } = req.body;
+    const dataLastPost = {
+        createdAt : req.headers.createdat
+    }
     
-    const { error } = validateDateSchema.validate(req.body);
+    const { error } = validateDateSchema.validate(dataLastPost);
 
     if (error) {
         return res.status(422).send(error.details[0].message);
     }
 
     try {
-        const countPosts = await postsTimeline.getCountNewPosts(id, createdAt);
+        const countPosts = await postsTimeline.getCountNewPosts(id, dataLastPost.createdAt);
+        console.log(countPosts)
         res.status(200).send(countPosts.rows[0]);
     } catch (error) {
         console.log(error)
