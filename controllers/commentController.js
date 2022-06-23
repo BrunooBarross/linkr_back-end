@@ -15,11 +15,11 @@ export async function postComment(req, res){
 
 
 export async function getComments(req, res){
-    const { postId } = req.body;
+    const { postid } = req.headers;
     const { id } = res.locals.userId;
 
     try {
-        const selectComments = await commentRepository.selectComments(id, postId)
+        const selectComments = await commentRepository.selectComments(id, postid)
         res.status(200).send(selectComments.rows);
     } catch (esrror) {
         console.log(error);

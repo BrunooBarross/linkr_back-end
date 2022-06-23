@@ -24,7 +24,7 @@ export async function checkComment(req, res, next) {
 
 export async function verifyExistingPost(req, res, next){
     try {
-        const existingPost = await postsTimeline.existingPost(req.body.postId)
+        const existingPost = await postsTimeline.existingPost(req.headers.postid)
         if (existingPost.rowCount === 0) {
             return res.sendStatus(404);
         }
