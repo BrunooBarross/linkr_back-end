@@ -1,4 +1,5 @@
 import connection from '../db.js'
+import dayjs from 'dayjs';
 
 async function verifyFollower(followerId, followId){
     return connection.query(`
@@ -6,8 +7,9 @@ async function verifyFollower(followerId, followId){
     `, [followerId, followId])
 }
 async function createFollower(followerId, followId) {
+    const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     return connection.query(`
-        INSERT INTO followers ("followerId", "followId") VALUES ($1, $2)`, [followerId, followId]);
+        INSERT INTO followers ("followerId", "followId", "createdAt") VALUES ($1, $2, $3)`, [followerId, followId, date]);
 }
 
 async function deleteRelationFollower(followerId, followId) {

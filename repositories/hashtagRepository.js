@@ -1,4 +1,5 @@
 import connection from "../db.js";
+import dayjs from 'dayjs';
 
 async function fetchTrendingHashtags(){
     return connection.query(`
@@ -16,10 +17,11 @@ async function existingHashtag(string){
 }
 
 async function insertHashtag(string){
+    const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     return connection.query(`
-        INSERT INTO hashtags(hashtag)
-        VALUES ($1) RETURNING id
-    `, [string])
+        INSERT INTO hashtags(hashtag, "createdAt")
+        VALUES ($1, $2) RETURNING id
+    `, [string, date])
 }
 
 async function insertRelationHashtag(postId, hashtagId){
