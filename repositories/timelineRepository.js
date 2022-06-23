@@ -1,7 +1,7 @@
 const LIMIT_POSTS = 20;
 import urlMetadata from "url-metadata";
 import connection from "../db.js";
-
+import dayjs from 'dayjs';
 
 async function getTimeline(userIdToken) {
 
@@ -28,14 +28,15 @@ async function getAuthTimeLine(id){
 }
 
 async function postUrlTimeLine(userId, link, text) {
+    const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     const metadata = await urlMetadata(link);
     if (metadata.image === "") {
         metadata.image = "https://archive.org/download/no-photo-available/no-photo-available.png"
     }
     return connection.query(`
-        INSERT INTO posts ("userId", "link", "text", "title", "description", "image")
-        VALUES ($1,$2,$3,$4,$5,$6) RETURNING id
-    `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image]);
+        INSERT INTO posts ("userId", "link", "text", "title", "description", "image", "createdAt")
+        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id
+    `, [userId, metadata.url, text, metadata.title, metadata.description, metadata.image,date]);
 }
 
 async function selectUserIdPost(postId) {

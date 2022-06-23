@@ -1,10 +1,12 @@
 import connection from '../db.js'
+import dayjs from 'dayjs';
 
 async function postComment(userId, postId, comment){
+    const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     return connection.query(`
-        INSERT INTO comments ("senderUserId", "postId", comment)
-        VALUES ($1, $2, $3)
-    `, [userId, postId, comment])
+        INSERT INTO comments ("senderUserId", "postId", comment, "createdAt" )
+        VALUES ($1, $2, $3, $4)
+    `, [userId, postId, comment, date])
 }
 
 async function selectComments(userIdToken, postId){

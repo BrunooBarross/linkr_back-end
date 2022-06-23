@@ -7,9 +7,10 @@ async function verifyLikes(postId, userId){
 }
 
 async function postLike(postId, userId){
+    const date = dayjs().locale('pt-BR').format('YYYY-MM-DD HH:mm:ss');
     return connection.query(`
-        INSERT INTO likes ("userId", "postId") VALUES ($1 , $2)
-    `, [userId, postId]);
+        INSERT INTO likes ("userId", "postId", "createdAt") VALUES ($1 , $2, $3)
+    `, [userId, postId, date]);
 }
 
 async function deleteLike(postId, userId){
