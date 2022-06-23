@@ -191,7 +191,6 @@ export async function countNewPosts(req, res){
 
     try {
         const countPosts = await postsTimeline.getCountNewPosts(id, dataLastPost.createdAt);
-        console.log(countPosts)
         res.status(200).send(countPosts.rows[0]);
     } catch (error) {
         console.log(error)
