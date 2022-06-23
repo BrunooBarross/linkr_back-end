@@ -11,6 +11,6 @@ const userRouter = Router();
 userRouter.post('/signup', checkSignUp, createUser);
 userRouter.post('/signin', checkSignIn, login);
 userRouter.get('/user/:id', validateToken, getUsersPosts);
-userRouter.post('/usernames', getUsersByUsername);
+userRouter.post('/usernames', validateToken, getUsersByUsername);
 
 export default userRouter;
