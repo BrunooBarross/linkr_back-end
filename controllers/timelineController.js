@@ -10,7 +10,7 @@ export async function timeline(req, res) {
     try {
         const verifyFollowers = await followerRepository.verifyAllFollowerUser(id);
         if (verifyFollowers.rowCount === 0) {
-            return res.status(200).send({ followingAnyone: false })
+            return res.status(200).send([{ followingNoOne: true }])
         }
 
         const lastPosts = await postsTimeline.getTimeline(id);
