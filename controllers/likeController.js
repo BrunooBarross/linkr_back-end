@@ -34,3 +34,14 @@ export async function deleteUserLike(req, res) {
         return res.sendStatus(500);
     }
 }
+
+export async function getNameLikes(req, res) {
+    const {postid} = req.headers;
+    try {
+        const namesLikes = await likesRepository.selectLikesNames(postid);
+        return res.status(200).send(namesLikes.rows);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
