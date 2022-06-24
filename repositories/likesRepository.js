@@ -20,10 +20,20 @@ async function deleteLike(postId, userId){
     `, [postId, userId]);
 }
 
+async function selectLikesNames(postId){
+    return connection.query(`
+        SELECT l."userId", u."userName"
+        FROM likes l
+        JOIN users u ON u.id = l."userId" AND l."postId" = $1
+        ORDER BY l.id
+    `, [postId]);
+}
+
 const likesRepository = {
     verifyLikes,
     postLike,
-    deleteLike
+    deleteLike,
+    selectLikesNames
 }
 
 export default likesRepository;
