@@ -1,3 +1,4 @@
+import followerRepository from "../repositories/followerRepository.js";
 import hashtagsRepository from "../repositories/hashtagRepository.js";
 import postsTimeline from "../repositories/timelineRepository.js";
 import { filterHashtags } from "../schemas/hashtagsSchema.js";
@@ -7,6 +8,11 @@ export async function timeline(req, res) {
     const { id } = res.locals.userId;
 
     try {
+        const verifyFollowers = await followerRepository.verifyAllFollowerUser(id);
+        if (verifyFollowers.rowCount === 0) {
+            return res.status(200).send({ followingAnyone: false })
+        }
+
         const lastPosts = await postsTimeline.getTimeline(id);
         const lastPosts2 = await postsTimeline.getAuthTimeLine(id)
 
