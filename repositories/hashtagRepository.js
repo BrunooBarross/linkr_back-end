@@ -54,7 +54,7 @@ async function deleteHashtag(string){
 
 async function fetchUsersHashtag(string){
     return connection.query(`
-        SELECT u."userName", u.picture, p.id as postId, p. "userId", p.link, p.text, p.title, p.description, p.image, 
+        SELECT u."userName", u.picture, p.id, p. "userId", p.link, p.text, p.title, p.description, p.image, 
         COALESCE(COUNT(l."postId"),0) AS likes, h1."postId", h2.id as "hashtagId", h2.hashtag
         FROM posts p
         LEFT JOIN likes l ON l."postId" = p.id
