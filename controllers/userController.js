@@ -41,7 +41,7 @@ export async function getUsersPosts(req, res) {
     }
     
     for (let i = 0; i < posts.rows.length; i++) {
-      posts.rows[i] = { ...posts.rows[i], picture: userData.rows[0].picture ,liked: false }
+      posts.rows[i] = { ...posts.rows[i], picture: userData.rows[0].picture ,liked: false, userName: userData.rows[0].userName }
     }
     for (let i = 0; i < posts.rows.length; i++) {
       for (let j = 0; j < postsLikes.rows.length; j++) {
